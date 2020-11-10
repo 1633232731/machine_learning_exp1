@@ -78,7 +78,7 @@ if __name__ == "__main__":
     x = []
     # alpha 0.01 - 10
     # alpha越大学习速度越快，但是拟合越不准确
-
+    # 这段代码需要运行时间比较长，先注释掉
     # for alpha in range(0,10000,10):
     #     time_start = time.time()
     #     multiple_linear_regression(alpha/1000, data2,False)
