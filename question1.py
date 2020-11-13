@@ -26,7 +26,6 @@ def gradient_descent(X, y, theta, alpha, epoch):
         # 迭代次数
         # 利用向量化一步求解
         temp = theta - (alpha / m) * (X * theta.T - y).T * X
-
         theta = temp
         cost[i] = compute_cost(X, y, theta)
 
@@ -146,7 +145,7 @@ def create_by_local():
     ax.legend(loc=2)  # 2表示在左上角
     ax.set_xlabel('Population')
     ax.set_ylabel('Profit')
-    ax.set_title('Predicted Profit vs. Population Size')
+    ax.set_title('拟合直线')
     plt.savefig("题目一拟合结果/梯度下降拟合.png")
     plt.show()
 
@@ -155,7 +154,7 @@ def create_by_local():
     ax.plot(np.arange(epoch), cost, 'r')  # np.arange()返回等差数组
     ax.set_xlabel('Iterations')
     ax.set_ylabel('Cost')
-    ax.set_title('Cost vs. Training Epoch')
+    ax.set_title('代价值随迭代次数的变化')
     plt.savefig("题目一拟合结果/梯度下降拟合代价.png")
     plt.show()
 

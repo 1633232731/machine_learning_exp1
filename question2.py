@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import time
-from sklearn.linear_model import LinearRegression
 
 
 def compute_cost(X, y, theta):
@@ -51,11 +49,12 @@ def multiple_linear_regression(alpha, data2, is_draw):
 
     if is_draw:
         fig, ax = plt.subplots(figsize=(12, 8))
+        # np.arange创建等差数组
         ax.plot(np.arange(epoch), cost2, 'r')
         ax.set_xlabel('Iterations')
         ax.set_ylabel('Cost')
         ax.set_title('Error vs. Training Epoch')
-        plt.savefig("题目二拟合结果/alpha=0.001迭代次数-代价曲线.png")
+        plt.savefig("题目二拟合结果/alpha={}迭代次数-代价曲线.png".format(alpha))
         plt.show()
     return g2, cost2
 
@@ -67,32 +66,29 @@ if __name__ == "__main__":
     print(data2.describe())
 
     # 预处理步骤 - 特征归一化
+    # Z-score
     # 减去平均值除以标准差,归一化后标准差为1
+    data_mean = data2.mean()
+    data_std = data2.std()
     data2 = (data2 - data2.mean()) / data2.std()
     print(data2.describe())
 
+    # 归一化min-max
+
     # add ones column
     data2.insert(0, 'Ones', 1)
-
+    # alpha小收敛速度慢，
+    # 太大损失函数每次迭代后不一定能下降，可能会发散
     time_cost = []
     x = []
-    # alpha 0.01 - 10
-    # alpha越大学习速度越快，但是拟合越不准确
-    # 这段代码需要运行时间比较长，先注释掉
-    # for alpha in range(0,10000,10):
-    #     time_start = time.time()
-    #     multiple_linear_regression(alpha/1000, data2,False)
-    #     x.append(alpha/100)
-    #     time_end = time.time()
-    #     time_cost.append(time_end-time_start)
-    #     print(alpha,"\t",time_end-time_start)
-    # plt.plot(x, time_cost, 'k.')  # 画出拟合曲线
-    # plt.savefig("题目二拟合结果/alpha-收敛时间.png")
-    # plt.show()
 
-    alpha = 0.001
+    # alpha 0.01 0.05 0.1
+    alpha = 0.1
     final_theta, cost = multiple_linear_regression(alpha, data2, True)
-    print("归一化后回归参数为:{}".format(final_theta))
-    print("归一化后最终代价为：{}".format(cost[-1]))
+    print("回归参数为:{}".format(final_theta * data_std["Size"] + data_mean["Bedrooms"]))
+    print("最终代价为：{}".format(cost[-1] * data_std["Size"] + data_mean["Bedrooms"]))
     # alpha越大学习速度越快，但是拟合越不准确
-    print("预测房屋面积为 1650 平方英尺，房间数量为 3 时，归一化价格：{}".format((final_theta[0, 0] + (final_theta[0, 1] * 1650) + (final_theta[0, 2] * 3))))
+
+    price = (final_theta[0, 0] + (final_theta[0, 1] * (1650 * data_std["Size"] + data_mean["Bedrooms"])) + (
+                final_theta[0, 2] * (3 * data_std["Bedrooms"] + data_mean["Bedrooms"])))
+    print("预测房屋面积为 1650 平方英尺，房间数量为 3 时，预测价格：{}".format(price))
